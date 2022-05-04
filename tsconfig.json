@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2018",
+    "outDir": "./dist",
+    "strict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "skipLibCheck": true ,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@src/*": ["src/*"]
+    }
+  },
+  "include": [
+    "types/**/*",
+    "src"
+  ],
+  "exclude": ["node_modules"]
+}
