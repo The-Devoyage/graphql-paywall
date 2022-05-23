@@ -17,34 +17,46 @@ export const Query = gql`
   }
 
   input GetPaywallsInput {
-    _id: StringFieldFilter
-    createdAt: StringFieldFilter
-    updatedAt: StringFieldFilter
-    created_by: StringFieldFilter
+    query: PaywallFieldFiltersInput!
     config: FilterConfig
-    productId: StringFieldFilter
-    status: StringFieldFilter
-    name: StringFieldFilter
   }
 
   input GetServicesInput {
-    _id: StringFieldFilter
-    createdAt: StringFieldFilter
-    updatedAt: StringFieldFilter
-    created_by: StringFieldFilter
+    query: ServiceFieldFiltersInput!
     config: FilterConfig
-    name: StringFieldFilter
   }
 
   input GetPaywallPurchasesInput {
-    _id: StringFieldFilter
-    createdAt: StringFieldFilter
-    updatedAt: StringFieldFilter
-    created_by: StringFieldFilter
+    query: PaywallPurchaseFieldFiltersInput!
     config: FilterConfig
-    account: StringFieldFilter
-    paywall: StringFieldFilter
-    status: StringFieldFilter
+  }
+
+  input PaywallFieldFiltersInput {
+    _id: [StringFieldFilter]
+    createdAt: [StringFieldFilter]
+    updatedAt: [StringFieldFilter]
+    created_by: [StringFieldFilter]
+    productId: [StringFieldFilter]
+    status: [StringFieldFilter]
+    name: [StringFieldFilter]
+  }
+
+  input ServiceFieldFiltersInput {
+    _id: [StringFieldFilter]
+    createdAt: [StringFieldFilter]
+    updatedAt: [StringFieldFilter]
+    created_by: [StringFieldFilter]
+    name: [StringFieldFilter]
+  }
+
+  input PaywallPurchaseFieldFiltersInput {
+    _id: [StringFieldFilter]
+    createdAt: [StringFieldFilter]
+    updatedAt: [StringFieldFilter]
+    created_by: [StringFieldFilter]
+    account: [StringFieldFilter]
+    paywall: [StringFieldFilter]
+    status: [StringFieldFilter]
   }
 
   extend type Query {

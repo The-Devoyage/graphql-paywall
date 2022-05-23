@@ -13,9 +13,23 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A country code as defined by ISO 3166-1 alpha-2 */
+  CountryCode: any;
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: any;
+  /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
+  EmailAddress: any;
+  /** A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction. */
+  JWT: any;
+  /** A field whose value conforms with the standard mongodb object ID as described here: https://docs.mongodb.com/manual/reference/method/ObjectId/#ObjectId. Example: 5e5677d71bdc2ae76344968c */
   ObjectID: any;
+  /** A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234. */
+  PhoneNumber: any;
+  /** A field whose value conforms to the standard postal code formats for United States, United Kingdom, Germany, Canada, France, Italy, Australia, Netherlands, Spain, Denmark, Sweden, Belgium, India, Austria, Portugal, Switzerland or Luxembourg. */
+  PostalCode: any;
   _Any: any;
+  federation__FieldSet: any;
+  link__Import: any;
 };
 
 export type Account = {
@@ -43,22 +57,15 @@ export enum BooleanFilterByEnum {
 }
 
 export type CreatePaywallInput = {
-  description: Scalars['String'];
-  name: Scalars['String'];
-  product_id: Scalars['ID'];
-  status?: InputMaybe<PaywallStatusEnum>;
+  payload: PaywallInput;
 };
 
 export type CreatePaywallPurchaseInput = {
-  account?: InputMaybe<Scalars['ObjectID']>;
-  paywall: Scalars['ObjectID'];
-  status?: InputMaybe<PaywallPurchaseStatusEnum>;
+  payload: PaywallPurchaseInput;
 };
 
 export type CreateServiceInput = {
-  limits: Array<PaywallLimitInput>;
-  name: Scalars['String'];
-  webhook?: InputMaybe<Scalars['String']>;
+  payload: ServiceInput;
 };
 
 /** Filter for documents which have a property that is a Date. */
@@ -80,18 +87,13 @@ export enum DateFilterByEnum {
 
 /** Global configuration details. */
 export type FilterConfig = {
+  history?: InputMaybe<HistoryFilterInput>;
   pagination?: InputMaybe<Pagination>;
 };
 
 export type GetPaywallPurchasesInput = {
-  _id?: InputMaybe<StringFieldFilter>;
-  account?: InputMaybe<StringFieldFilter>;
   config?: InputMaybe<FilterConfig>;
-  createdAt?: InputMaybe<StringFieldFilter>;
-  created_by?: InputMaybe<StringFieldFilter>;
-  paywall?: InputMaybe<StringFieldFilter>;
-  status?: InputMaybe<StringFieldFilter>;
-  updatedAt?: InputMaybe<StringFieldFilter>;
+  query: PaywallPurchaseFieldFiltersInput;
 };
 
 export type GetPaywallPurchasesResponse = {
@@ -101,14 +103,8 @@ export type GetPaywallPurchasesResponse = {
 };
 
 export type GetPaywallsInput = {
-  _id?: InputMaybe<StringFieldFilter>;
   config?: InputMaybe<FilterConfig>;
-  createdAt?: InputMaybe<StringFieldFilter>;
-  created_by?: InputMaybe<StringFieldFilter>;
-  name?: InputMaybe<StringFieldFilter>;
-  productId?: InputMaybe<StringFieldFilter>;
-  status?: InputMaybe<StringFieldFilter>;
-  updatedAt?: InputMaybe<StringFieldFilter>;
+  query: PaywallFieldFiltersInput;
 };
 
 export type GetPaywallsResponse = {
@@ -118,12 +114,8 @@ export type GetPaywallsResponse = {
 };
 
 export type GetServicesInput = {
-  _id?: InputMaybe<StringFieldFilter>;
   config?: InputMaybe<FilterConfig>;
-  createdAt?: InputMaybe<StringFieldFilter>;
-  created_by?: InputMaybe<StringFieldFilter>;
-  name?: InputMaybe<StringFieldFilter>;
-  updatedAt?: InputMaybe<StringFieldFilter>;
+  query: ServiceFieldFiltersInput;
 };
 
 export type GetServicesResponse = {
@@ -131,6 +123,43 @@ export type GetServicesResponse = {
   data: Array<Service>;
   stats: Stats;
 };
+
+export type HistoricStats = {
+  __typename?: 'HistoricStats';
+  _id?: Maybe<HistoricStatsId>;
+  total?: Maybe<Scalars['Int']>;
+};
+
+export type HistoricStatsId = {
+  __typename?: 'HistoricStatsId';
+  DAY_OF_MONTH?: Maybe<Scalars['Int']>;
+  DAY_OF_WEEK?: Maybe<Scalars['Int']>;
+  DAY_OF_YEAR?: Maybe<Scalars['Int']>;
+  HOUR?: Maybe<Scalars['Int']>;
+  MILLISECONDS?: Maybe<Scalars['Int']>;
+  MINUTES?: Maybe<Scalars['Int']>;
+  MONTH?: Maybe<Scalars['Int']>;
+  SECONDS?: Maybe<Scalars['Int']>;
+  WEEK?: Maybe<Scalars['Int']>;
+  YEAR?: Maybe<Scalars['Int']>;
+};
+
+export type HistoryFilterInput = {
+  interval: Array<HistoryFilterIntervalEnum>;
+};
+
+export enum HistoryFilterIntervalEnum {
+  DayOfMonth = 'DAY_OF_MONTH',
+  DayOfWeek = 'DAY_OF_WEEK',
+  DayOfYear = 'DAY_OF_YEAR',
+  Hour = 'HOUR',
+  Milliseconds = 'MILLISECONDS',
+  Minutes = 'MINUTES',
+  Month = 'MONTH',
+  Seconds = 'SECONDS',
+  Week = 'WEEK',
+  Year = 'YEAR'
+}
 
 /** Filter for documents which have a property that is an Integer. */
 export type IntFieldFilter = {
@@ -218,6 +247,23 @@ export type Paywall = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type PaywallFieldFiltersInput = {
+  _id?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  createdAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  created_by?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  name?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  productId?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  status?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  updatedAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+};
+
+export type PaywallInput = {
+  description: Scalars['String'];
+  name: Scalars['String'];
+  product_id: Scalars['ID'];
+  status?: InputMaybe<PaywallStatusEnum>;
+};
+
 export type PaywallLimitInput = {
   name: Scalars['String'];
   scopes: Array<ScopeInput>;
@@ -232,6 +278,22 @@ export type PaywallPurchase = {
   paywall: Paywall;
   status: PaywallPurchaseStatusEnum;
   updatedAt: Scalars['DateTime'];
+};
+
+export type PaywallPurchaseFieldFiltersInput = {
+  _id?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  account?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  createdAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  created_by?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  paywall?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  status?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  updatedAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+};
+
+export type PaywallPurchaseInput = {
+  account?: InputMaybe<Scalars['ObjectID']>;
+  paywall: Scalars['ObjectID'];
+  status?: InputMaybe<PaywallPurchaseStatusEnum>;
 };
 
 export enum PaywallPurchaseStatusEnum {
@@ -288,9 +350,23 @@ export type Service = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type ServiceFieldFiltersInput = {
+  _id?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  createdAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  created_by?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  name?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+  updatedAt?: InputMaybe<Array<InputMaybe<StringFieldFilter>>>;
+};
+
+export type ServiceInput = {
+  limits: Array<PaywallLimitInput>;
+  name: Scalars['String'];
+};
+
 export type Stats = {
   __typename?: 'Stats';
   cursor?: Maybe<Scalars['DateTime']>;
+  history?: Maybe<Array<HistoricStats>>;
   page?: Maybe<Scalars['Int']>;
   remaining?: Maybe<Scalars['Int']>;
   total?: Maybe<Scalars['Int']>;
@@ -320,30 +396,31 @@ export enum StringFilterByEnum {
 }
 
 export type UpdatePaywallInput = {
-  description?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  paywall: GetPaywallsInput;
-  product_id?: InputMaybe<Scalars['ID']>;
-  status?: InputMaybe<PaywallStatusEnum>;
+  payload: PaywallInput;
+  query: PaywallFieldFiltersInput;
 };
 
 export type UpdatePaywallPurchaseInput = {
-  account?: InputMaybe<Scalars['ObjectID']>;
-  paywallPurchase: GetPaywallPurchasesInput;
-  status?: InputMaybe<PaywallPurchaseStatusEnum>;
+  payload: PaywallPurchaseInput;
+  query: PaywallPurchaseFieldFiltersInput;
 };
 
 export type UpdateServiceInput = {
-  limits?: InputMaybe<Array<PaywallLimitInput>>;
-  name?: InputMaybe<Scalars['String']>;
-  service: GetServicesInput;
-  webhook?: InputMaybe<Scalars['String']>;
+  payload: ServiceInput;
+  query: ServiceFieldFiltersInput;
 };
 
 export type User = {
   __typename?: 'User';
   _id: Scalars['ObjectID'];
 };
+
+export enum Link__Purpose {
+  /** `EXECUTION` features provide metadata necessary for operation execution. */
+  Execution = 'EXECUTION',
+  /** `SECURITY` features provide metadata necessary to securely resolve fields. */
+  Security = 'SECURITY'
+}
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -420,12 +497,14 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BooleanFieldFilter: BooleanFieldFilter;
   BooleanFilterByEnum: BooleanFilterByEnum;
+  CountryCode: ResolverTypeWrapper<Scalars['CountryCode']>;
   CreatePaywallInput: CreatePaywallInput;
   CreatePaywallPurchaseInput: CreatePaywallPurchaseInput;
   CreateServiceInput: CreateServiceInput;
   DateFieldFilter: DateFieldFilter;
   DateFilterByEnum: DateFilterByEnum;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>;
   FilterConfig: FilterConfig;
   GetPaywallPurchasesInput: GetPaywallPurchasesInput;
   GetPaywallPurchasesResponse: ResolverTypeWrapper<GetPaywallPurchasesResponse>;
@@ -433,24 +512,37 @@ export type ResolversTypes = ResolversObject<{
   GetPaywallsResponse: ResolverTypeWrapper<GetPaywallsResponse>;
   GetServicesInput: GetServicesInput;
   GetServicesResponse: ResolverTypeWrapper<GetServicesResponse>;
+  HistoricStats: ResolverTypeWrapper<HistoricStats>;
+  HistoricStatsId: ResolverTypeWrapper<HistoricStatsId>;
+  HistoryFilterInput: HistoryFilterInput;
+  HistoryFilterIntervalEnum: HistoryFilterIntervalEnum;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntFieldFilter: IntFieldFilter;
   IntFilterByEnum: IntFilterByEnum;
+  JWT: ResolverTypeWrapper<Scalars['JWT']>;
   Limit: ResolverTypeWrapper<Limit>;
   Mutation: ResolverTypeWrapper<{}>;
   ObjectID: ResolverTypeWrapper<Scalars['ObjectID']>;
   OperatorFieldConfigEnum: OperatorFieldConfigEnum;
   Pagination: Pagination;
   Paywall: ResolverTypeWrapper<Paywall>;
+  PaywallFieldFiltersInput: PaywallFieldFiltersInput;
+  PaywallInput: PaywallInput;
   PaywallLimitInput: PaywallLimitInput;
   PaywallPurchase: ResolverTypeWrapper<PaywallPurchase>;
+  PaywallPurchaseFieldFiltersInput: PaywallPurchaseFieldFiltersInput;
+  PaywallPurchaseInput: PaywallPurchaseInput;
   PaywallPurchaseStatusEnum: PaywallPurchaseStatusEnum;
   PaywallStatusEnum: PaywallStatusEnum;
+  PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']>;
+  PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
   Scope: ResolverTypeWrapper<Scope>;
   ScopeInput: ScopeInput;
   Service: ResolverTypeWrapper<Service>;
+  ServiceFieldFiltersInput: ServiceFieldFiltersInput;
+  ServiceInput: ServiceInput;
   Stats: ResolverTypeWrapper<Stats>;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringArrayFieldFilter: StringArrayFieldFilter;
@@ -463,6 +555,9 @@ export type ResolversTypes = ResolversObject<{
   _Any: ResolverTypeWrapper<Scalars['_Any']>;
   _Entity: ResolversTypes['Account'] | ResolversTypes['Paywall'] | ResolversTypes['User'];
   _Service: ResolverTypeWrapper<_Service>;
+  federation__FieldSet: ResolverTypeWrapper<Scalars['federation__FieldSet']>;
+  link__Import: ResolverTypeWrapper<Scalars['link__Import']>;
+  link__Purpose: Link__Purpose;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -470,11 +565,13 @@ export type ResolversParentTypes = ResolversObject<{
   Account: Account;
   Boolean: Scalars['Boolean'];
   BooleanFieldFilter: BooleanFieldFilter;
+  CountryCode: Scalars['CountryCode'];
   CreatePaywallInput: CreatePaywallInput;
   CreatePaywallPurchaseInput: CreatePaywallPurchaseInput;
   CreateServiceInput: CreateServiceInput;
   DateFieldFilter: DateFieldFilter;
   DateTime: Scalars['DateTime'];
+  EmailAddress: Scalars['EmailAddress'];
   FilterConfig: FilterConfig;
   GetPaywallPurchasesInput: GetPaywallPurchasesInput;
   GetPaywallPurchasesResponse: GetPaywallPurchasesResponse;
@@ -482,20 +579,32 @@ export type ResolversParentTypes = ResolversObject<{
   GetPaywallsResponse: GetPaywallsResponse;
   GetServicesInput: GetServicesInput;
   GetServicesResponse: GetServicesResponse;
+  HistoricStats: HistoricStats;
+  HistoricStatsId: HistoricStatsId;
+  HistoryFilterInput: HistoryFilterInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   IntFieldFilter: IntFieldFilter;
+  JWT: Scalars['JWT'];
   Limit: Limit;
   Mutation: {};
   ObjectID: Scalars['ObjectID'];
   Pagination: Pagination;
   Paywall: Paywall;
+  PaywallFieldFiltersInput: PaywallFieldFiltersInput;
+  PaywallInput: PaywallInput;
   PaywallLimitInput: PaywallLimitInput;
   PaywallPurchase: PaywallPurchase;
+  PaywallPurchaseFieldFiltersInput: PaywallPurchaseFieldFiltersInput;
+  PaywallPurchaseInput: PaywallPurchaseInput;
+  PhoneNumber: Scalars['PhoneNumber'];
+  PostalCode: Scalars['PostalCode'];
   Query: {};
   Scope: Scope;
   ScopeInput: ScopeInput;
   Service: Service;
+  ServiceFieldFiltersInput: ServiceFieldFiltersInput;
+  ServiceInput: ServiceInput;
   Stats: Stats;
   String: Scalars['String'];
   StringArrayFieldFilter: StringArrayFieldFilter;
@@ -507,19 +616,76 @@ export type ResolversParentTypes = ResolversObject<{
   _Any: Scalars['_Any'];
   _Entity: ResolversParentTypes['Account'] | ResolversParentTypes['Paywall'] | ResolversParentTypes['User'];
   _Service: _Service;
+  federation__FieldSet: Scalars['federation__FieldSet'];
+  link__Import: Scalars['link__Import'];
 }>;
 
-export type ExtendsDirectiveArgs = { };
+export type Federation__ExtendsDirectiveArgs = { };
 
-export type ExtendsDirectiveResolver<Result, Parent, ContextType = Context, Args = ExtendsDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+export type Federation__ExtendsDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__ExtendsDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__ExternalDirectiveArgs = {
+  reason?: Maybe<Scalars['String']>;
+};
+
+export type Federation__ExternalDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__ExternalDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__InaccessibleDirectiveArgs = { };
+
+export type Federation__InaccessibleDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__InaccessibleDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__OverrideDirectiveArgs = {
+  from: Scalars['String'];
+};
+
+export type Federation__OverrideDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__OverrideDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__ProvidesDirectiveArgs = {
+  fields: Scalars['federation__FieldSet'];
+};
+
+export type Federation__ProvidesDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__ProvidesDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__RequiresDirectiveArgs = {
+  fields: Scalars['federation__FieldSet'];
+};
+
+export type Federation__RequiresDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__RequiresDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type Federation__TagDirectiveArgs = {
+  name: Scalars['String'];
+};
+
+export type Federation__TagDirectiveResolver<Result, Parent, ContextType = Context, Args = Federation__TagDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type LinkDirectiveArgs = {
+  as?: Maybe<Scalars['String']>;
+  for?: Maybe<Link__Purpose>;
+  import?: Maybe<Array<Maybe<Scalars['link__Import']>>>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type LinkDirectiveResolver<Result, Parent, ContextType = Context, Args = LinkDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type ShareableDirectiveArgs = { };
+
+export type ShareableDirectiveResolver<Result, Parent, ContextType = Context, Args = ShareableDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type AccountResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = ResolversObject<{
   _id?: Resolver<ResolversTypes['ObjectID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface CountryCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['CountryCode'], any> {
+  name: 'CountryCode';
+}
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
+}
+
+export interface EmailAddressScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['EmailAddress'], any> {
+  name: 'EmailAddress';
 }
 
 export type GetPaywallPurchasesResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GetPaywallPurchasesResponse'] = ResolversParentTypes['GetPaywallPurchasesResponse']> = ResolversObject<{
@@ -539,6 +705,30 @@ export type GetServicesResponseResolvers<ContextType = Context, ParentType exten
   stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export type HistoricStatsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HistoricStats'] = ResolversParentTypes['HistoricStats']> = ResolversObject<{
+  _id?: Resolver<Maybe<ResolversTypes['HistoricStatsId']>, ParentType, ContextType>;
+  total?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type HistoricStatsIdResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HistoricStatsId'] = ResolversParentTypes['HistoricStatsId']> = ResolversObject<{
+  DAY_OF_MONTH?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  DAY_OF_WEEK?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  DAY_OF_YEAR?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  HOUR?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  MILLISECONDS?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  MINUTES?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  MONTH?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  SECONDS?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  WEEK?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  YEAR?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export interface JwtScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JWT'], any> {
+  name: 'JWT';
+}
 
 export type LimitResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Limit'] = ResolversParentTypes['Limit']> = ResolversObject<{
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -582,6 +772,14 @@ export type PaywallPurchaseResolvers<ContextType = Context, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface PhoneNumberScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PhoneNumber'], any> {
+  name: 'PhoneNumber';
+}
+
+export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PostalCode'], any> {
+  name: 'PostalCode';
+}
+
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   _entities?: Resolver<Array<Maybe<ResolversTypes['_Entity']>>, ParentType, ContextType, RequireFields<Query_EntitiesArgs, 'representations'>>;
   _service?: Resolver<ResolversTypes['_Service'], ParentType, ContextType>;
@@ -608,6 +806,7 @@ export type ServiceResolvers<ContextType = Context, ParentType extends Resolvers
 
 export type StatsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Stats'] = ResolversParentTypes['Stats']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  history?: Resolver<Maybe<Array<ResolversTypes['HistoricStats']>>, ParentType, ContextType>;
   page?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   remaining?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   total?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -632,17 +831,32 @@ export type _ServiceResolvers<ContextType = Context, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface Federation__FieldSetScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['federation__FieldSet'], any> {
+  name: 'federation__FieldSet';
+}
+
+export interface Link__ImportScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['link__Import'], any> {
+  name: 'link__Import';
+}
+
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Account?: AccountResolvers<ContextType>;
+  CountryCode?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
+  EmailAddress?: GraphQLScalarType;
   GetPaywallPurchasesResponse?: GetPaywallPurchasesResponseResolvers<ContextType>;
   GetPaywallsResponse?: GetPaywallsResponseResolvers<ContextType>;
   GetServicesResponse?: GetServicesResponseResolvers<ContextType>;
+  HistoricStats?: HistoricStatsResolvers<ContextType>;
+  HistoricStatsId?: HistoricStatsIdResolvers<ContextType>;
+  JWT?: GraphQLScalarType;
   Limit?: LimitResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   ObjectID?: GraphQLScalarType;
   Paywall?: PaywallResolvers<ContextType>;
   PaywallPurchase?: PaywallPurchaseResolvers<ContextType>;
+  PhoneNumber?: GraphQLScalarType;
+  PostalCode?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Scope?: ScopeResolvers<ContextType>;
   Service?: ServiceResolvers<ContextType>;
@@ -651,8 +865,18 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   _Any?: GraphQLScalarType;
   _Entity?: _EntityResolvers<ContextType>;
   _Service?: _ServiceResolvers<ContextType>;
+  federation__FieldSet?: GraphQLScalarType;
+  link__Import?: GraphQLScalarType;
 }>;
 
 export type DirectiveResolvers<ContextType = Context> = ResolversObject<{
-  extends?: ExtendsDirectiveResolver<any, any, ContextType>;
+  federation__extends?: Federation__ExtendsDirectiveResolver<any, any, ContextType>;
+  federation__external?: Federation__ExternalDirectiveResolver<any, any, ContextType>;
+  federation__inaccessible?: Federation__InaccessibleDirectiveResolver<any, any, ContextType>;
+  federation__override?: Federation__OverrideDirectiveResolver<any, any, ContextType>;
+  federation__provides?: Federation__ProvidesDirectiveResolver<any, any, ContextType>;
+  federation__requires?: Federation__RequiresDirectiveResolver<any, any, ContextType>;
+  federation__tag?: Federation__TagDirectiveResolver<any, any, ContextType>;
+  link?: LinkDirectiveResolver<any, any, ContextType>;
+  shareable?: ShareableDirectiveResolver<any, any, ContextType>;
 }>;

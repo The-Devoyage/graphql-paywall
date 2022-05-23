@@ -14,11 +14,21 @@ export const Query: QueryResolvers = {
       Helpers.Resolver.CheckAuth({ context });
 
       const { filter, options } = GenerateMongo<IPaywall>({
-        fieldFilters: args.getPaywallsInput,
+        fieldFilters: args.getPaywallsInput.query,
         config: args.getPaywallsInput?.config,
       });
 
-      const paywalls = await Paywall.findAndPaginate<IPaywall>(filter, options);
+      const paywalls = await Paywall.findAndPaginate<IPaywall>(
+        filter,
+        options,
+        {
+          history: {
+            filter: {
+              interval: args.getPaywallsInput.config?.history?.interval ?? [],
+            },
+          },
+        }
+      );
 
       return paywalls;
     } catch (error) {
@@ -32,13 +42,21 @@ export const Query: QueryResolvers = {
       Helpers.Resolver.CheckAuth({ context });
 
       const { filter, options } = GenerateMongo<IPaywallPurchase>({
-        fieldFilters: args.getPaywallPurchasesInput,
+        fieldFilters: args.getPaywallPurchasesInput.query,
         config: args.getPaywallPurchasesInput?.config,
       });
 
       const purchases = await PaywallPurchase.findAndPaginate<IPaywallPurchase>(
         filter,
-        options
+        options,
+        {
+          history: {
+            filter: {
+              interval:
+                args.getPaywallPurchasesInput.config?.history?.interval ?? [],
+            },
+          },
+        }
       );
 
       await PaywallPurchase.populate(purchases.data, { path: "paywall" });
@@ -55,11 +73,21 @@ export const Query: QueryResolvers = {
       Helpers.Resolver.CheckAuth({ context });
 
       const { filter, options } = GenerateMongo<IService>({
-        fieldFilters: args.getServicesInput,
+        fieldFilters: args.getServicesInput.query,
         config: args.getServicesInput?.config,
       });
 
-      const services = await Service.findAndPaginate<IService>(filter, options);
+      const services = await Service.findAndPaginate<IService>(
+        filter,
+        options,
+        {
+          history: {
+            filter: {
+              interval: args.getServicesInput.config?.history?.interval ?? [],
+            },
+          },
+        }
+      );
 
       await Service.populate(services.data, { path: "limits.scopes.paywall" });
 

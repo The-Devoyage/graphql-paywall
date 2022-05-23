@@ -2,6 +2,15 @@ import { gql } from "apollo-server-express";
 
 export const Mutation = gql`
   input CreatePaywallInput {
+    payload: PaywallInput!
+  }
+
+  input UpdatePaywallInput {
+    query: PaywallFieldFiltersInput!
+    payload: PaywallInput!
+  }
+
+  input PaywallInput {
     product_id: ID!
     status: PaywallStatusEnum
     description: String!
@@ -9,36 +18,32 @@ export const Mutation = gql`
   }
 
   input CreatePaywallPurchaseInput {
+    payload: PaywallPurchaseInput!
+  }
+
+  input UpdatePaywallPurchaseInput {
+    query: PaywallPurchaseFieldFiltersInput!
+    payload: PaywallPurchaseInput!
+  }
+
+  input PaywallPurchaseInput {
     account: ObjectID
     paywall: ObjectID!
     status: PaywallPurchaseStatusEnum
   }
 
   input CreateServiceInput {
-    name: String!
-    limits: [PaywallLimitInput!]!
-    webhook: String
-  }
-
-  input UpdatePaywallInput {
-    paywall: GetPaywallsInput!
-    product_id: ID
-    status: PaywallStatusEnum
-    description: String
-    name: String
-  }
-
-  input UpdatePaywallPurchaseInput {
-    paywallPurchase: GetPaywallPurchasesInput!
-    account: ObjectID
-    status: PaywallPurchaseStatusEnum
+    payload: ServiceInput!
   }
 
   input UpdateServiceInput {
-    service: GetServicesInput!
-    name: String
-    limits: [PaywallLimitInput!]
-    webhook: String
+    query: ServiceFieldFiltersInput!
+    payload: ServiceInput!
+  }
+
+  input ServiceInput {
+    name: String!
+    limits: [PaywallLimitInput!]!
   }
 
   input PaywallLimitInput {

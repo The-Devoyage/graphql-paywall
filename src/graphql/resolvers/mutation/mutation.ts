@@ -57,7 +57,7 @@ export const Mutation: MutationResolvers = {
       });
 
       const { filter } = GenerateMongo<IPaywall>({
-        fieldFilters: args.updatePaywallInput.paywall,
+        fieldFilters: args.updatePaywallInput.query,
       });
 
       const paywall = await Paywall.findOne<IPaywall>(filter);
@@ -68,7 +68,7 @@ export const Mutation: MutationResolvers = {
 
       const updated = await Paywall.findOneAndUpdate<IPaywall>(
         { _id: paywall._id },
-        { ...args.updatePaywallInput },
+        { ...args.updatePaywallInput.payload },
         { new: true }
       );
 
@@ -92,8 +92,8 @@ export const Mutation: MutationResolvers = {
       });
 
       if (
-        args.createPaywallPurchaseInput.account &&
-        args.createPaywallPurchaseInput.account._id !==
+        args.createPaywallPurchaseInput.payload.account &&
+        args.createPaywallPurchaseInput.payload.account._id !==
           context.auth.payload.account?._id
       ) {
         Helpers.Resolver.LimitRole({
@@ -105,8 +105,8 @@ export const Mutation: MutationResolvers = {
       }
 
       if (
-        !!args.createPaywallPurchaseInput.status &&
-        args.createPaywallPurchaseInput.status !== "CREATED"
+        !!args.createPaywallPurchaseInput.payload.status &&
+        args.createPaywallPurchaseInput.payload.status !== "CREATED"
       ) {
         Helpers.Resolver.LimitRole({
           roleLimit: 1,
@@ -120,7 +120,7 @@ export const Mutation: MutationResolvers = {
         ...args.createPaywallPurchaseInput,
         created_by: context.auth.payload.user?._id,
         account:
-          args.createPaywallPurchaseInput.account ??
+          args.createPaywallPurchaseInput.payload.account ??
           context.auth.payload.account?._id,
       });
       await newPayWallPurchase.save();
@@ -155,7 +155,7 @@ export const Mutation: MutationResolvers = {
       });
 
       const { filter } = GenerateMongo<IPaywallPurchase>({
-        fieldFilters: args.updatePaywallPurchaseInput.paywallPurchase,
+        fieldFilters: args.updatePaywallPurchaseInput.query,
       });
 
       const paywallPurchase = await PaywallPurchase.findOne<IPaywallPurchase>(
@@ -168,7 +168,7 @@ export const Mutation: MutationResolvers = {
 
       const updated = await PaywallPurchase.findOneAndUpdate<IPaywallPurchase>(
         { _id: paywallPurchase._id },
-        { ...args.updatePaywallPurchaseInput },
+        { ...args.updatePaywallPurchaseInput.payload },
         { new: true }
       );
 
@@ -200,7 +200,7 @@ export const Mutation: MutationResolvers = {
       });
 
       const newService = new Service({
-        ...args.createServiceInput,
+        ...args.createServiceInput.payload,
         created_by: context.auth.payload.user?._id,
       });
       await newService.save();
@@ -235,7 +235,7 @@ export const Mutation: MutationResolvers = {
       });
 
       const { filter } = GenerateMongo<IService>({
-        fieldFilters: args.updateServiceInput.service,
+        fieldFilters: args.updateServiceInput.query,
       });
 
       const service = await Service.findOne<IService>(filter);
@@ -246,7 +246,7 @@ export const Mutation: MutationResolvers = {
 
       const updated = await Service.findOneAndUpdate<IService>(
         { _id: service._id },
-        { ...args.updateServiceInput },
+        { ...args.updateServiceInput.payload },
         { new: true }
       );
 
